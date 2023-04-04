@@ -1,80 +1,90 @@
-let quoteContainer = document.querySelector('.quote-container');
-let newQuoteButton = document.querySelector('#new-quote-btn');
-let count = 0;
-let characters = ['Jaime Lannister', 'Tyrion Lannister', 'Bran Stark', 'Daenerys Targaryen', 'Petyr Baelish', 'Aerys II Targaryen', 'Jon Snow', 'Joffrey Baratheon', 'Eddard \'Ned\' Stark', 'Cersei Lannister', 'Robert Baratheon'];
+const characterNames = [
+  'Jaime Lannister',
+  'Tyrion Lannister',
+  'Bran Stark',
+  'Daenerys Targaryen',
+  'Petyr Baelish',
+  'Aerys II Targaryen',
+  'Jon Snow',
+  'Joffrey Baratheon',
+  'Eddard \'Ned\' Stark',
+  'Cersei Lannister',
+  'Robert Baratheon'
+];
 
-function getQuote() {
+let count = 0;
+
+const newQuoteBtn = document.querySelector('#new-quote-btn');
+const quoteText = document.querySelector('#quote-text');
+const characterName = document.querySelector('#character-name');
+const options = document.querySelectorAll('.option');
+
+function generateQuote() {
   fetch('https://api.gameofthronesquotes.xyz/v1/random')
     .then(response => response.json())
     .then(data => {
-      let quote = data.sentence;
-      let character = data.character.name;
-      let options = [];
-
-      for (let i = 0; i < 3; i++) {
-        let randomIndex = Math.floor(Math.random() * characters.length);
-        let randomCharacter = characters[randomIndex];
-        if (randomCharacter !== character) {
-          options.push(randomCharacter);
+      quoteText.innerText = data.sentence;
+      characterName.innerText = data.character.name;
+      const correctOption = Math.floor(Math.random() * 4);
+      let optionIndex = 0;
+      for (let i = 0; i < options.length; i++) {
+        if (i === correctOption) {
+          options[i].innerText = data.character.name;
         } else {
-          i--;
+          options[i].innerText = characterNames[optionIndex];
+          optionIndex++;
         }
       }
-
-      options.push(character);
-      options = shuffle(options);
-
-      let quiz = '';
-      if (count % 2 === 0) {
-        quiz = `Who said: <span class="quote">${quote}</span><br><br>`;
-        for (let i = 0; i < options.length; i++) {
-          quiz += `<button class="option" value="${options[i]}">${options[i]}</button>`;
-        }
-        quoteContainer.innerHTML = quiz;
-        let optionsButton = document.querySelectorAll('.option');
-        for (let i = 0; i < optionsButton.length; i++) {
-          optionsButton[i].addEventListener('click', checkAnswer);
-        }
-      } else {
-        quoteContainer.innerHTML = `<p class="quote">${quote}</p><br><span class="character">- ${character}</span>`;
-      }
-    })
-    .catch(error => console.error(error));
+    });
 }
 
-function checkAnswer() {
-  let userAnswer = this.value;
-  let correctAnswer = document.querySelector('.character').textContent.slice(2);
-  if (userAnswer === correctAnswer) {
-    quoteContainer.innerHTML = 'Correct! Would you like to learn SQL from scratch in an interactive way? Check out this SQL Game of Thrones course - https://resagratia.com/learn/sql<br><br>';
-  } else {
-    quoteContainer.innerHTML = 'Oh no! That\'s not right. The good news is that you can now learn SQL from scratch in an interactive way using data from the Game of Thrones world. Ready to delve in? Check this out - https://resagratia.com/learn/sql<br><br>';
+function showQuiz() {
+  for (let i = 0; i < options.length; i++) {
+    options[i].classList.remove('hide');
   }
-  quoteContainer.innerHTML += '<button id="new-quote-btn" class="button">Another Quote</button>';
-  newQuoteButton = document.querySelector('#new-quote-btn');
-  newQuoteButton.addEventListener('click', () => {
-    count++;
-    getQuote();
+  characterName.classList.add('hide');
+  quoteText.innerText = 'Who said this quote?';
+}
+
+function showResult(isCorrect) {
+  const resultText = document.querySelector('#result-text');
+  const resultLink = document.querySelector('#result-link');
+  const resultBtn = document.querySelector('#result-btn');
+  for (let i = 0; i < options.length; i++) {
+    options[i].classList.add('hide');
+  }
+  characterName.classList.remove('hide');
+  if (isCorrect) {
+    resultText.innerText = 'Correct! Would you like to learn SQL from scratch in an interactive way? Check out this SQL Game of Thrones course -';
+    resultLink.href = 'https://resagratia.com/learn/sql';
+  } else {
+    resultText.innerText = 'Oh no! That\'s not right. The good news is that you can now learn SQL from scratch in an interactive way using data from the Game of Thrones world. Ready to delve in? Check this out -';
+    resultLink.href = 'https://resagratia.com/learn/sql';
+  }
+  resultBtn.innerText = 'Get Another Quote';
+  resultBtn.addEventListener('click', () => {
+    resultText.innerText = '';
+    resultLink.href = '#';
+    resultBtn.innerText = '';
+    generateQuote();
   });
 }
 
-function shuffle(array) {
-  let currentIndex = array.length;
-  let temporaryValue, randomIndex;
-
-  while (currentIndex !== 0) {
-    randomIndex = Math.floor(Math.random() * currentIndex);
-    currentIndex -= 1;
-    temporaryValue = array[currentIndex];
-    array[currentIndex] = array[randomIndex];
-    array[randomIndex] = temporaryValue;
-  }
-
-  return array;
-}
-
-getQuote();
-newQuoteButton.addEventListener('click', () => {
+newQuoteBtn.addEventListener('click', () => {
   count++;
-  getQuote();
+  if (count % 2 === 0) {
+    showQuiz();
+  } else {
+    generateQuote();
+  }
+});
+
+options.forEach(option => {
+  option.addEventListener('click', () => {
+    if (option.innerText === characterName.innerText) {
+      showResult(true);
+    } else {
+      showResult(false);
+    }
+  });
 });
