@@ -1,2 +1,47 @@
-<h1> Hola, como estas? </h1>
-<p><b> Vivir mi vida </b></p>
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Game of Thrones Quotes</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  </head>
+  <body>
+    <div id="quote-container">
+      <p id="quote-text"></p>
+      <p id="quote-character"></p>
+      <p id="quote-house"></p>
+    </div>
+    <button id="new-quote-btn">Another Quote</button>
+    <script>
+      $(document).ready(function() {
+        // Define the API endpoint
+        const endpoint = "https://api.gameofthronesquotes.xyz/v1/random";
+        
+        // Define the function to fetch a new quote from the API
+        function getQuote() {
+          $.ajax({
+            url: endpoint,
+            dataType: "json",
+            success: function(data) {
+              // Update the quote text and character/house names
+              $("#quote-text").text(data.sentence);
+              $("#quote-character").text(`— ${data.character.name}`);
+              $("#quote-house").text(`(${data.character.house.name})`);
+            },
+            error: function() {
+              alert("Failed to fetch quote from API.");
+            }
+          });
+        }
+        
+        // Fetch a new quote when the page loads
+        getQuote();
+        
+        // Fetch a new quote when the "Another Quote" button is clicked
+        $("#new-quote-btn").click(function() {
+          getQuote();
+        });
+      });
+    </script>
+  </body>
+</html>
+
