@@ -1,102 +1,23 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Game of Thrones Quotes</title>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <style>
-      body {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        height: 100vh;
-        background-color: #232f3e;
-      }
-      
-      #quote-container {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        padding: 20px;
-        background-color: #2c3e50;
-        border-radius: 10px;
-        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
-        color: white;
-        font-family: monospace;
-        font-size: 24px;
-        line-height: 1.5;
-        text-align: center;
-        max-width: 90%;
-      }
-      
-      #quote-character {
-        font-size: 20px;
-        font-style: italic;
-        margin-top: 10px;
-      }
-      
-      #quote-house {
-        font-size: 16px;
-        font-style: italic;
-        margin-top: 5px;
-      }
-      
-      #new-quote-btn {
-        margin-top: 20px;
-        font-size: 18px;
-        font-weight: bold;
-        background-color: #3498db;
-        color: white;
-        border: none;
-        border-radius: 5px;
-        padding: 10px 20px;
-        cursor: pointer;
-        transition: all 0.2s ease-in-out;
-      }
-      
-      #new-quote-btn:hover {
-        background-color: #2980b9;
-      }
-    </style>
-  </head>
-  <body>
-    <div id="quote-container">
+<head>
+  <meta charset="UTF-8">
+  <title>Game of Thrones Quotes</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Game of Thrones Quotes</h1>
+    <div class="quote-box">
       <p id="quote-text"></p>
       <p id="quote-character"></p>
-      <p id="quote-house"></p>
+      <button id="new-quote-btn">Another Quote</button>
     </div>
-    <button id="new-quote-btn">Another Quote</button>
-    <script>
-      $(document).ready(function() {
-        // Define the API endpoint
-        const endpoint = "https://api.gameofthronesquotes.xyz/v1/random";
-        
-        // Define the function to fetch a new quote from the API
-        function getQuote() {
-          $.ajax({
-            url: endpoint,
-            dataType: "json",
-            success: function(data) {
-              // Update the quote text and character/house names
-              $("#quote-text").text(data.sentence);
-              $("#quote-character").text(`— ${data.character.name}`);
-              $("#quote-house").text(`(${data.character.house.name})`);
-            },
-            error: function() {
-              alert("Failed to fetch quote from API.");
-            }
-          });
-        }
-        
-        // Fetch a new quote when the page loads
-        getQuote();
-        
-        // Fetch a new quote when the "Another Quote" button is clicked
-        $("#new-quote-btn").click(function() {
-          getQuote();
-        });
-      });
-    </script>
-  </body>
+    <div id="quiz-box" class="hidden">
+      <p id="quiz-question"></p>
+      <div id="quiz-options"></div>
+    </div>
+  </div>
+  <script src="script.js"></script>
+</body>
 </html>
