@@ -37,16 +37,16 @@ h1 {
   cursor: pointer;
 }
 
-.badge-base LI-profile-badge {
+.linkedin-container {
   display: flex;
   flex-direction: column;
   justify-content: center;
-/*   align-items: center; */
+  align-items: center;
 /*   height: 100vh; */
 }
 
 .hidden {
-display: flex;
+display: none;
 }
 
 #quiz-box {
